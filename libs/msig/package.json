@@ -1,6 +1,6 @@
 {
   "name": "msig",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "The tiny expressive universal signals library you wish you had but only discovered now.",
   "type": "module",
   "main": "./build/modern/index.cjs",

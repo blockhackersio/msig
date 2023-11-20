@@ -1,5 +1,13 @@
 # msig
 
+## 0.0.6
+
+### Patch Changes
+
+- 87a5d1e: Infrastruture changes
+- Updated dependencies [87a5d1e]
+  - @msig/core@0.0.6
+
 ## 0.0.5
 
 ### Patch Changes
