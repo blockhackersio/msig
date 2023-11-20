@@ -1,5 +1,5 @@
 {
-  "name": "@msig/core",
+  "name": "msig",
   "version": "0.0.1",
   "description": "The tiny expressive universal signals library you wish you had but only discovered now.",
   "type": "module",
@@ -17,13 +17,10 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "test": "vitest",
     "build": "tsup"
   },
-  "devDependencies": {
-    "typescript": "^5.2.2",
-    "vitest": "^0.34.6",
-    "config": "workspace:*"
+  "dependencies": {
+    "@msig/core": "workspace:*"
   },
   "keywords": [
     "signals",

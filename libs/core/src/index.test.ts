@@ -1,149 +1,13 @@
 import { expect, test, vi } from "vitest";
 
-type Signal<T> = [get: Accessor<T>, set: Setter<T>];
-type Accessor<T> = () => T;
-type Setter<T> = (v: T | Updater<T>) => T;
-type Updater<T> = (prev?: T) => T;
-type Effect = () => void;
-type Target<T> = { value: T };
-type EffectMap = Map<Target<any>, Set<Effect>>;
-type ResourceReturn<T> = [
-  {
-    (): T | undefined;
-    state: "unresolved" | "pending" | "ready" | "errored";
-    loading: boolean;
-    error: any;
-    latest: T | undefined;
-  },
-  {
-    mutate: (v: T | undefined) => T | undefined;
-    refetch: () => Promise<T | None>;
-  },
-];
-type ResourceSignal<T> = ResourceReturn<T>[0];
-
-type Optional<T> = T | None;
-type None = undefined;
-const None = undefined;
-
-function isUpdater<T>(v: T | Updater<T>): v is Updater<T> {
-  return typeof v === "function";
-}
-
-const effects: EffectMap = new Map();
-let currentEffect: Optional<Effect> = None;
-
-function track<T>(target: Target<T>) {
-  if (currentEffect) {
-    const listeners = effects.get(target) ?? new Set<Effect>();
-    listeners.add(currentEffect);
-    if (!effects.has(target)) effects.set(target, listeners);
-  }
-}
-
-function trigger<T>(target: Target<T>) {
-  const listeners = effects.get(target);
-  if (listeners) {
-    for (const listener of listeners) {
-      listener();
-    }
-  }
-}
-
-function createSignal<T>(initialValue: T): Signal<T> {
-  const target: Target<T> = { value: initialValue };
-
-  const get: Accessor<T> = () => {
-    track(target);
-    return target.value;
-  };
-
-  const set: Setter<T> = (v) => {
-    const updater = isUpdater(v) ? v : () => v;
-    target.value = updater(target.value);
-    trigger(target);
-    return target.value;
-  };
-
-  return [get, set];
-}
-
-function createEffect<T>(fn: () => T): void;
-function createEffect<T>(fn: (v: T) => T, value: T): void;
-function createEffect<T>(fn: (v?: T) => T, value?: T): void {
-  currentEffect = () => {
-    value = fn(value);
-  };
-  currentEffect();
-  currentEffect = None;
-}
-
-function createMemo<T>(fn: () => T): Accessor<T>;
-function createMemo<T>(fn: (v: T) => T, value: T): Accessor<T>;
-function createMemo<T>(fn: (v?: T) => T, value?: T): Accessor<T> {
-  const [out, setOut] = createSignal<Optional<T>>(value);
-  createEffect((v) => {
-    const o = fn(v);
-    setOut(o);
-    return o;
-  }, value);
-  return out as Accessor<T>;
-}
-
-type Fetcher<T, U> = (v?: U) => Promise<T>;
-
-function createResource<T, U>(fetcher: Fetcher<T, U>): ResourceReturn<T>;
-function createResource<T, U>(
-  source: Accessor<U>,
-  fetcher: Fetcher<T, U>,
-): ResourceReturn<T>;
-function createResource<T, U>(
-  arg1: Fetcher<T, U> | Accessor<U>,
-  arg2?: Fetcher<T, U>,
-): ResourceReturn<T> {
-  // Parse arguments
-  const [source, fetcher] =
-    arguments.length === 1
-      ? [None, arg1 as Fetcher<T, U>]
-      : [arg1 as Accessor<U>, arg2 as Fetcher<T, U>];
-  // console.log(source, fetcher);
-  const [out, setOut] = createSignal<Optional<T>>(None);
-  const signal = out as ResourceSignal<T>;
-  signal.state = "unresolved";
-
-  async function refetch(v?: U) {
-    const prom = fetcher(v);
-    signal.state = "pending";
-    signal.loading = true;
-    try {
-      const res = await prom;
-      setOut(res);
-      signal.latest = res;
-      signal.state = "ready";
-      return res;
-    } catch (err) {
-      signal.state = "errored";
-    } finally {
-      signal.loading = false;
-    }
-  }
-
-  function mutate(v: T | undefined): T | undefined {
-    setOut(v);
-    signal.latest = v;
-    return v;
-  }
-
-  nextTick(() => {
-    createEffect(() => {
-      if (source) {
-        refetch(source());
-      } else refetch();
-    });
-  });
-
-  return [out as ResourceSignal<T>, { refetch, mutate }];
-}
+import {
+  createMemo,
+  createEffect,
+  createResource,
+  createSignal,
+  nextTick,
+  None,
+} from ".";
 
 test("createSignal with initial value", () => {
   const [get] = createSignal(0);
@@ -298,15 +162,6 @@ test("deferred fails", async () => {
   }
   expect(error).toBe("Whoops!");
 });
-
-function nextTick(fn?: () => void) {
-  return new Promise<void>((res) =>
-    setTimeout(() => {
-      fn && fn();
-      return res();
-    }, 0),
-  );
-}
 
 function createDeferred<T>() {
   let _resolve: (value: T) => void = () => {};
