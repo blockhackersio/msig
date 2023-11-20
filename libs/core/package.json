@@ -1,0 +1,23 @@
+{
+  "name": "core",
+  "version": "1.0.0",
+  "description": "The tiny expressive universal signals library you wish you had but only discovered now.",
+  "main": "dist/index.js",
+  "module": "src/index.ts",
+  "scripts": {
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.6",
+    "tsconfig": "workspace:*"
+  },
+  "keywords": [
+    "signals",
+    "solidjs",
+    "reactivity",
+    "universal"
+  ],
+  "author": "Rudi Yardley",
+  "license": "MIT"
+}
