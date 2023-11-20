@@ -28,4 +28,4 @@ You can publish by running the `pub` script.
 pnpm pub
 ```
 
-You will be asked questions around which packages have major minor or atch bumps.
+You will be asked questions around which packages have major minor or patch bumps.
