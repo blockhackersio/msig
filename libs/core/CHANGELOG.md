@@ -1,5 +1,11 @@
 # @msig/core
 
+## 0.0.3
+
+### Patch Changes
+
+- Infrastructure changes
+
 ## 0.0.2
 
 ### Patch Changes
