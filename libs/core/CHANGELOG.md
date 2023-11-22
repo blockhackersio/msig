@@ -1,5 +1,11 @@
 # @msig/core
 
+## 0.0.7
+
+### Patch Changes
+
+- e3ffadc: Update types
+
 ## 0.0.6
 
 ### Patch Changes
