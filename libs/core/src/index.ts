@@ -5,9 +5,6 @@ export type Updater<T> = (prev?: T) => T;
 export type Effect = () => void;
 export type Target<T> = { value: T };
 export type EffectMap = Map<Target<any>, Set<Effect>>;
-// export type SignalOptions<T> = {
-//   equals?: false | ((prev: T, next: T) => boolean);
-// };
 export type ResourceReturn<T> = [
   {
     (): T | undefined;
