@@ -1,5 +1,11 @@
 # @msig/core
 
+## 0.0.8
+
+### Patch Changes
+
+- a766d1c: update infrastructure
+
 ## 0.0.7
 
 ### Patch Changes

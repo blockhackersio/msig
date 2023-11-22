@@ -1,5 +1,13 @@
 # msig
 
+## 0.0.8
+
+### Patch Changes
+
+- a766d1c: update infrastructure
+- Updated dependencies [a766d1c]
+  - @msig/core@0.0.8
+
 ## 0.0.7
 
 ### Patch Changes
