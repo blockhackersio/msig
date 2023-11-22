@@ -31,6 +31,7 @@ import React from "react";
 import { createSignal } from "@msig/core";
 import { useSignal } from "@msig/react";
 
+// Note the following is in "global" scope
 const [count, setCount] = createSignal(0);
 
 function increment() {

@@ -77,6 +77,7 @@ export function createEffect<T>(fn: (v?: T) => T, value?: T): void {
 }
 
 export function createMemo<T>(fn: () => T): Accessor<T>;
+export function createMemo<T>(fn: (v?: T) => T): Accessor<T>;
 export function createMemo<T>(fn: (v: T) => T, value: T): Accessor<T>;
 export function createMemo<T>(fn: (v?: T) => T, value?: T): Accessor<T> {
   const [out, setOut] = createSignal<Optional<T>>(value);
