@@ -1,6 +1,6 @@
 {
   "name": "msig",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "The tiny expressive universal signals library you wish you had but only discovered now.",
   "type": "module",
   "main": "./build/modern/index.cjs",
@@ -29,6 +29,7 @@
   "author": "Rudi Yardley",
   "license": "MIT",
   "dependencies": {
-    "@msig/core": "workspace:*"
+    "@msig/core": "workspace:*",
+    "@msig/react": "workspace:*"
   }
 }

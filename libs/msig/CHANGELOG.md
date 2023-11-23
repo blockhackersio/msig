@@ -1,5 +1,14 @@
 # msig
 
+## 0.0.10
+
+### Patch Changes
+
+- fc1f629: Added example
+- Updated dependencies [fc1f629]
+  - @msig/react@0.0.10
+  - @msig/core@0.0.10
+
 ## 0.0.9
 
 ### Patch Changes

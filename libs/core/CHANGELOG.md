@@ -1,5 +1,11 @@
 # @msig/core
 
+## 0.0.10
+
+### Patch Changes
+
+- fc1f629: Added example
+
 ## 0.0.9
 
 ### Patch Changes
