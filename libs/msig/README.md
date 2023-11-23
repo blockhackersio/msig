@@ -4,12 +4,18 @@ The tiny expressive universal signals library you wish you had but only discover
 
 This is a port of the Solid.js Signals API you can use anywhere.
 
+## Installation
+
+```
+npm add msig
+```
+
 ## Usage
 
 You can use the library in a similar (not exactly the same) way to the Solid.js API.
 
 ```ts
-import { createSignal, createMemo } from "@msig/core";
+import { createSignal, createMemo } from "msig";
 
 const [a, setA] = createSignal(3);
 const [b, setB] = createSignal(4);
@@ -28,8 +34,7 @@ Once you have created your reactive system you can expose the output signals usi
 
 ```tsx
 import React from "react";
-import { createSignal } from "@msig/core";
-import { useSignal } from "@msig/react";
+import { createSignal, useSignal } from "msig";
 
 // Note the following is in "global" scope
 const [count, setCount] = createSignal(0);
