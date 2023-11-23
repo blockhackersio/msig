@@ -5,7 +5,10 @@ import {
   createEffect,
   createResource,
   createSignal,
+  createRoot,
   nextTick,
+  Accessor,
+  Setter,
   None,
 } from ".";
 
@@ -38,6 +41,27 @@ test("createSignal with effect", () => {
   expect(external).toBe(1);
   set(2);
   expect(external).toBe(2);
+});
+
+test("createSignal with root", () => {
+  let external = 0;
+  let setCount: Setter<number> = () => 0;
+  let count: Accessor<number> = () => 0;
+  const dispose = createRoot((dispose) => {
+    [count, setCount] = createSignal<number>(0);
+
+    createEffect(() => {
+      external = count();
+    });
+
+    return dispose;
+  });
+  const increment = (c = 0) => c + 1;
+  setCount(increment);
+  expect(external).toBe(1);
+  dispose();
+  setCount(increment);
+  expect(external).toBe(1);
 });
 
 test("Signal accessed multiple times within effect", () => {

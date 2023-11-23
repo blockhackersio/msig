@@ -5,6 +5,7 @@ export type Updater<T> = (prev?: T) => T;
 export type Effect = () => void;
 export type Target<T> = { value: T };
 export type EffectMap = Map<Target<any>, Set<Effect>>;
+export type ScopedEffectMap = Map<unknown, EffectMap>;
 export type ResourceReturn<T> = [
   {
     (): T | undefined;
@@ -19,47 +20,130 @@ export type ResourceReturn<T> = [
   },
 ];
 export type ResourceSignal<T> = ResourceReturn<T>[0];
-
 export type Optional<T> = T | None;
 export type None = undefined;
 export const None = undefined;
+
+const SCOPE_GLOBAL = "_SCOPE_GLOBAL_";
 
 function isUpdater<T>(v: T | Updater<T>): v is Updater<T> {
   return typeof v === "function";
 }
 
-const effects: EffectMap = new Map();
-let currentEffect: Optional<Effect> = None;
+class EffectStore {
+  private targetToEffects = new Map<Target<any>, Set<Effect>>();
+  private scopeToEffects = new Map<unknown, Set<Effect>>();
+  add<T>(target: Target<T>, effect: Effect, scope: unknown) {
+    if (!this.targetToEffects.has(target)) {
+      this.targetToEffects.set(target, new Set());
+    }
 
-function track<T>(target: Target<T>) {
-  if (currentEffect) {
-    const listeners = effects.get(target) ?? new Set<Effect>();
-    listeners.add(currentEffect);
-    if (!effects.has(target)) effects.set(target, listeners);
+    this.targetToEffects.get(target)!.add(effect);
+    if (!this.scopeToEffects.has(scope)) {
+      this.scopeToEffects.set(scope, new Set());
+    }
+    this.scopeToEffects.get(scope)!.add(effect);
+  }
+  get<T>(target: Target<T>): Set<Effect> | None {
+    return this.targetToEffects.get(target);
+  }
+  deleteAllEffectsByScope(scope: unknown): void {
+    const effects = this.scopeToEffects.get(scope);
+
+    if (effects) {
+      for (const effect of effects) {
+        for (const [
+          target,
+          setOfEffectsInTarget,
+        ] of this.targetToEffects.entries()) {
+          if (setOfEffectsInTarget.has(effect)) {
+            setOfEffectsInTarget.delete(effect);
+
+            if (setOfEffectsInTarget.size === 0) {
+              this.targetToEffects.delete(target);
+            }
+          }
+        }
+      }
+
+      this.scopeToEffects.delete(scope);
+    }
   }
 }
 
-function trigger<T>(target: Target<T>) {
-  const listeners = effects.get(target);
-  if (listeners) {
-    for (const listener of listeners) {
-      listener();
+class EffectManager {
+  private currentEffect: Optional<Effect> = None;
+  private scope: unknown = SCOPE_GLOBAL;
+  private store: EffectStore = new EffectStore();
+
+  registerEffect(effect: Effect) {
+    this.currentEffect = effect;
+    effect();
+    this.currentEffect = None;
+  }
+
+  setScope(scope: unknown) {
+    const oldScope = this.scope;
+    this.scope = scope;
+    return oldScope;
+  }
+
+  dispose(scope: unknown) {
+    this.store.deleteAllEffectsByScope(scope);
+  }
+
+  track<T>(target: Target<T>) {
+    if (this.currentEffect) {
+      this.store.add(target, this.currentEffect, this.scope);
     }
   }
+
+  trigger<T>(target: Target<T>) {
+    const listeners = this.store.get(target);
+    if (listeners) {
+      for (const listener of listeners) {
+        listener();
+      }
+    }
+  }
+
+  static _instance: EffectManager;
+  static get() {
+    if (!EffectManager._instance) {
+      EffectManager._instance = new EffectManager();
+    }
+    return EffectManager._instance;
+  }
+}
+
+function getEffectManager() {
+  return EffectManager.get();
+}
+
+export function createRoot<T>(fn: (dispose: () => void) => T): T {
+  const scope = {};
+  const effectsManager = getEffectManager();
+  const oldScope = effectsManager.setScope(scope);
+  function dispose() {
+    effectsManager.dispose(scope);
+  }
+  const out = fn(dispose);
+  effectsManager.setScope(oldScope);
+  return out;
 }
 
 export function createSignal<T>(initialValue: T): Signal<T> {
   const target: Target<T> = { value: initialValue };
 
   const get: Accessor<T> = () => {
-    track(target);
+    getEffectManager().track(target);
     return target.value;
   };
 
   const set: Setter<T> = (v) => {
     const updater = isUpdater(v) ? v : () => v;
     target.value = updater(target.value);
-    trigger(target);
+    getEffectManager().trigger(target);
     return target.value;
   };
 
@@ -69,11 +153,9 @@ export function createSignal<T>(initialValue: T): Signal<T> {
 export function createEffect<T>(fn: () => T): void;
 export function createEffect<T>(fn: (v: T) => T, value: T): void;
 export function createEffect<T>(fn: (v?: T) => T, value?: T): void {
-  currentEffect = () => {
+  getEffectManager().registerEffect(() => {
     value = fn(value);
-  };
-  currentEffect();
-  currentEffect = None;
+  });
 }
 
 export function createMemo<T>(fn: () => T): Accessor<T>;
