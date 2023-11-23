@@ -1,10 +1,9 @@
 {
-  "name": "@msig/core",
+  "name": "@msig/react",
   "version": "0.0.8",
   "description": "The tiny expressive universal signals library you wish you had but only discovered now.",
   "type": "module",
   "main": "./build/modern/index.cjs",
-  "types": "./build/modern/index.d.ts",
   "exports": {
     ".": {
       "import": {
@@ -23,9 +22,9 @@
     "build": "tsup"
   },
   "devDependencies": {
+    "config": "workspace:*",
     "typescript": "^5.2.2",
-    "vitest": "^0.34.6",
-    "config": "workspace:*"
+    "vitest": "^0.34.6"
   },
   "keywords": [
     "signals",
@@ -34,5 +33,10 @@
     "universal"
   ],
   "author": "Rudi Yardley",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@msig/core": "workspace:*",
+    "@types/use-sync-external-store": "^0.0.6",
+    "use-sync-external-store": "^1.2.0"
+  }
 }
