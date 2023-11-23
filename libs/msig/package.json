@@ -1,6 +1,6 @@
 {
   "name": "msig",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "The tiny expressive universal signals library you wish you had but only discovered now.",
   "type": "module",
   "main": "./build/modern/index.cjs",
@@ -20,9 +20,6 @@
   "scripts": {
     "build": "tsup"
   },
-  "dependencies": {
-    "@msig/core": "workspace:*"
-  },
   "keywords": [
     "signals",
     "solidjs",
@@ -30,5 +27,8 @@
     "universal"
   ],
   "author": "Rudi Yardley",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@msig/core": "workspace:*"
+  }
 }
