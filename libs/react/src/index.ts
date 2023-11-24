@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "use-sync-external-store";
+import { useSyncExternalStore } from "react";
 import { Accessor, createEffect, createRoot } from "@msig/core";
 export type NoInfer<T> = [T][T extends any ? 0 : never];
 

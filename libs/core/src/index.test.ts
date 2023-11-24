@@ -64,6 +64,18 @@ test("createSignal with root", () => {
   expect(external).toBe(1);
 });
 
+test("Signal does not rerun effect when value does not change", () => {
+  const [get, set] = createSignal(0);
+  const fn = vi.fn(() => {
+    get();
+  });
+  createEffect(fn);
+  set(1);
+  expect(fn).toHaveBeenCalledTimes(2);
+  set(1);
+  expect(fn).toHaveBeenCalledTimes(2);
+});
+
 test("Signal accessed multiple times within effect", () => {
   const [get, set] = createSignal(0);
   const fn = vi.fn(() => {

@@ -142,7 +142,9 @@ export function createSignal<T>(initialValue: T): Signal<T> {
 
   const set: Setter<T> = (v) => {
     const updater = isUpdater(v) ? v : () => v;
-    target.value = updater(target.value);
+    const newValue = updater(target.value);
+    if (newValue === target.value) return target.value;
+    target.value = newValue;
     getEffectManager().trigger(target);
     return target.value;
   };
