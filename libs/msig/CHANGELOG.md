@@ -1,5 +1,14 @@
 # msig
 
+## 0.0.11
+
+### Patch Changes
+
+- 3515197: Dont rerun effects needlessly
+- Updated dependencies [3515197]
+  - @msig/react@0.0.11
+  - @msig/core@0.0.11
+
 ## 0.0.10
 
 ### Patch Changes

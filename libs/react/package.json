@@ -1,6 +1,6 @@
 {
   "name": "@msig/react",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "The tiny expressive universal signals library you wish you had but only discovered now.",
   "type": "module",
   "main": "./build/modern/index.cjs",
@@ -22,7 +22,12 @@
     "build": "tsup"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/user-event": "^14.5.1",
+    "@types/react": "^18",
     "config": "workspace:*",
+    "jsdom": "^22.1.0",
     "typescript": "^5.2.2",
     "vitest": "^0.34.6"
   },
@@ -37,6 +42,9 @@
   "dependencies": {
     "@msig/core": "workspace:*",
     "@types/use-sync-external-store": "^0.0.6",
-    "use-sync-external-store": "^1.2.0"
+    "@vitejs/plugin-react": "^4.2.0",
+    "react": "^0.1.2",
+    "use-sync-external-store": "^1.2.0",
+    "vite": "^5.0.2"
   }
 }

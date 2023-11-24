@@ -1,5 +1,11 @@
 # @msig/core
 
+## 0.0.11
+
+### Patch Changes
+
+- 3515197: Dont rerun effects needlessly
+
 ## 0.0.10
 
 ### Patch Changes
