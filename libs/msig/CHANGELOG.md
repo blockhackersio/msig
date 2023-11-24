@@ -1,5 +1,14 @@
 # msig
 
+## 0.0.12
+
+### Patch Changes
+
+- 2e3afe0: Fix dependency
+- Updated dependencies [2e3afe0]
+  - @msig/core@0.0.12
+  - @msig/react@0.0.12
+
 ## 0.0.11
 
 ### Patch Changes

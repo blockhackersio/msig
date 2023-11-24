@@ -1,6 +1,6 @@
 {
   "name": "@msig/react",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "The tiny expressive universal signals library you wish you had but only discovered now.",
   "type": "module",
   "main": "./build/modern/index.cjs",
