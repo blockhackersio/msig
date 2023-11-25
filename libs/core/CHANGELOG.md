@@ -1,5 +1,11 @@
 # @msig/core
 
+## 0.0.13
+
+### Patch Changes
+
+- 822d3d4: Add untrack
+
 ## 0.0.12
 
 ### Patch Changes

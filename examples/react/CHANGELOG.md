@@ -1,5 +1,12 @@
 # react
 
+## 0.1.4
+
+### Patch Changes
+
+- Updated dependencies [822d3d4]
+  - msig@0.0.13
+
 ## 0.1.3
 
 ### Patch Changes
