@@ -10,6 +10,7 @@ import {
   Accessor,
   Setter,
   None,
+  untrack,
 } from ".";
 
 test("createSignal with initial value", () => {
@@ -118,6 +119,27 @@ test("createMemo", () => {
   expect(product()).toBe(50);
   setB(5);
   expect(product()).toBe(25);
+});
+test("createMemo with untrack", () => {
+  const [a, setA] = createSignal(10);
+  const [b, setB] = createSignal(10);
+
+  const product = createMemo(() => {
+    const aVal = a();
+    let bVal: number = 0;
+    untrack(() => {
+      bVal = b();
+    });
+    return aVal * bVal;
+  });
+
+  expect(product()).toBe(100);
+  setA(5);
+  expect(product()).toBe(50);
+  setB(5);
+  // following should not change because
+  // setB should not rerun the effect
+  expect(product()).toBe(50);
 });
 
 test("createResource happy", async () => {

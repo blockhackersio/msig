@@ -75,6 +75,7 @@ class EffectManager {
   private currentEffect: Optional<Effect> = None;
   private scope: unknown = SCOPE_GLOBAL;
   private store: EffectStore = new EffectStore();
+  private allowTracking: boolean = true;
 
   registerEffect(effect: Effect) {
     this.currentEffect = effect;
@@ -92,8 +93,16 @@ class EffectManager {
     this.store.deleteAllEffectsByScope(scope);
   }
 
+  disableTracking() {
+    this.allowTracking = false;
+  }
+
+  enableTracking() {
+    this.allowTracking = true;
+  }
+
   track<T>(target: Target<T>) {
-    if (this.currentEffect) {
+    if (this.currentEffect && this.allowTracking) {
       this.store.add(target, this.currentEffect, this.scope);
     }
   }
@@ -171,6 +180,13 @@ export function createMemo<T>(fn: (v?: T) => T, value?: T): Accessor<T> {
     return o;
   }, value);
   return out as Accessor<T>;
+}
+
+export function untrack<T>(fn: () => T): T {
+  getEffectManager().disableTracking();
+  const o = fn();
+  getEffectManager().enableTracking();
+  return o;
 }
 
 type Fetcher<T, U> = (v?: U) => Promise<T>;
